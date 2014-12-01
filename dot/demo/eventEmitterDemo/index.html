@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<body>
+    <!--script src="http://localhost:35729/livereload.js"></script-->
+    <script src="../../src/utils/EventEmitter.js"></script>
+    <script src="../../src/proxies/Proxy.js"></script>
+    <script src="../../src/events/Event.js"></script>
+    <script src="src/ObjectA.js"></script>
+    <script src="src/ObjectB.js"></script>
+    <script src="src/ObjectC.js"></script>
+    <script src="src/TestEvent.js"></script>
+    <script>
+
+        var emitter = EventEmitter;
+        var a = new ObjectA(emitter);
+        var b = new ObjectB(emitter);
+        var c = new ObjectC(emitter);
+        a.emitEvent1();
+        setTimeout(function(){console.log("emitting");a.emitEvent1();}, 2000);
+        emitter.reset();
+/*
+        var formData = new FormData();
+
+        formData.append("username", "Groucho");
+        formData.append("account", 123456);
+
+        var p = new Proxy("http://httpbin.org/post", "POST", onSuccess, onError);
+        p.call(formData);
+
+        function onSuccess(data){
+            console.log("proxy is working");
+            console.dir(data);
+            console.log(p.id);
+            console.log(p.getData());
+        }
+
+        function onError(errorID){
+            console.log("something wrong with the web server");
+            console.log(errorID);
+        }*/
+    </script>
+</body>
+</html>

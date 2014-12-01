@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../src/models/ModelFacade.js"></script>
+    <script src="../../src/models/Model.js"></script>
+    <script src="src/LeaderBoard.js"></script>
+    <script>
+
+        var model;
+
+        function init(){
+            model = ModelFacade.addModel(LeaderBoard);
+
+            model.addScore("abcd", 4590);
+            model.addScore("efgh", 439);
+            model.addScore("tbvd", 862);
+            model.addScore("ijkl", 1690);
+
+            console.log(model.getList());
+
+            model.reset();
+
+            console.log(model.getTotalScores());
+
+            model.dispose();
+        }
+    </script>
+</head>
+<body onload="init()">
+
+</body>
+</html>
