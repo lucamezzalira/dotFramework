@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">72.31</p>
+      <p class="stat">74.60</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">33</p>
+      <p class="stat">43</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">15.34</p>
+      <p class="stat">18.67</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.14</p>
+      <p class="stat">0.18</p>
     </div>
   </div>
 </div>
@@ -92,39 +92,49 @@
     <textarea id="file-source" class="col-md-12">/**
  * Created by mezzalab2013 on 07/11/14.
  */
-jenius.ModelFacade = (function () {
+(function (jenius) {
+    function ModelFacade() {
+        var _models = {};
 
-    var _models = {};
+        function _createModel(_modelModule, _args) {
+            if (!_modelModule instanceof jenius.Model) {
+                throw new Error(&quot;ModelFacade accepts to create only objects that extends Model base class!&quot;);
+            }
 
-    function _createModel(_modelModule, _args) {
-        if(!_modelModule instanceof Model){
-            throw new Error(&quot;ModelFacade accepts to create only objects that extends Model base class!&quot;);
+            var model = new _modelModule(_args);
+            _models[model.nameReference] = model;
+            return model;
         }
 
-        var model = new _modelModule(_args);
-        _models[model.nameReference] = model;
-        return model;
-    }
-
-    function _getModelByName(_modelName) {
-        return _models[_modelName];
-    }
-
-    function _getModelById(_modelId) {
-        var tmpModel, i;
-        for(i in _models){
-            if(_models[i].id === _modelId)
-                tmpModel = _models[i];
+        function _getModelByName(_modelNameReference) {
+            return _models[_modelNameReference];
         }
-        return tmpModel;
+
+        function _getModelById(_modelId) {
+            var tmpModel, i;
+            for (i in _models) {
+                if (_models[i].id === _modelId) {
+                    tmpModel = _models[i];
+                }
+            }
+            return tmpModel;
+        }
+
+        function _resetAll() {
+            _models = {};
+        }
+
+        return {
+            addModel: _createModel,
+            getModelByName: _getModelByName,
+            getModelById: _getModelById,
+            resetAll: _resetAll
+        };
     }
 
-    return {
-        addModel: _createModel,
-        getModelByName: _getModelByName,
-        getModelById: _getModelById
-    };
-}());</textarea>
+    jenius.ModelFacade = new ModelFacade();
+
+}(jenius || {}));</textarea>
   </div>
 </div>
 

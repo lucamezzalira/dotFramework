@@ -11,11 +11,15 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-              curly: true,
-              eqeqeq: true,
-              eqnull: true,
-              unused: true,
-              browser: true
+                curly: true,
+                eqeqeq: true,
+                eqnull: true,
+                unused: true,
+                freeze: true,
+                debug: true,
+                maxdepth: 2,
+                maxcomplexity: 3,
+                browser: true
             },
             uses_defaults: ['src/**/*.js', 'test/**/*.js'],
         },
@@ -53,7 +57,7 @@ module.exports = function(grunt) {
                 '(function(){' +
                 '',
                 footer: '' +
-                '}())'
+                '}());'
 
             },
             dist: {

@@ -6,22 +6,20 @@
 </head>
 <body>
     <!--script src="http://localhost:35729/livereload.js"></script-->
-    <script src="../../src/utils/EventEmitter.js"></script>
-    <script src="../../src/proxies/Proxy.js"></script>
-    <script src="../../src/events/Event.js"></script>
+    <script src="../../dist/jenius.js"></script>
     <script src="src/ObjectA.js"></script>
     <script src="src/ObjectB.js"></script>
     <script src="src/ObjectC.js"></script>
     <script src="src/TestEvent.js"></script>
     <script>
 
-        var emitter = EventEmitter;
+        var emitter = jenius.EventEmitter;
         var a = new ObjectA(emitter);
         var b = new ObjectB(emitter);
         var c = new ObjectC(emitter);
         a.emitEvent1();
         setTimeout(function(){console.log("emitting");a.emitEvent1();}, 2000);
-        emitter.reset();
+       // emitter.reset();
 /*
         var formData = new FormData();
 

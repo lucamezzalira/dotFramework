@@ -3,7 +3,7 @@
  */
 var TestEvent = function(){
 
-    var _evt = new Event(TestEvent.TEST_EVENT);
+    var _evt = new jenius.Event(TestEvent.TEST_EVENT);
     return _evt;
 
 }

@@ -9,7 +9,7 @@ var ObjectC = function(_emitter){
     var _eventEmitter = _emitter;
 
     var _evtToListen = new TestEvent();
-    _eventEmitter.on(_evtToListen, function(_msg){
+    _eventEmitter.onOnce(_evtToListen, function(_msg){
         console.log("ObjC listening to", _evtToListen.type, _evtToListen.id, _msg);
     })
 

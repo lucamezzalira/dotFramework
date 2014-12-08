@@ -1,245 +1,322 @@
-/*  - jenius v1.0.0 - 2014-12-01 - website: www.jenius.io - email: mezzalab@gmail.com */var jenius = jenius || {};(function(){jenius.Event = function(_type){
+/*  - jenius v1.0.0 - 2014-12-03 - website: www.jenius.io - email: mezzalab@gmail.com */var jenius = jenius || {};(function(){(function(jenius){
 
-    var _eventType = _type;
-    var _id = String(new Date().getTime()) + String(Math.random());
+    function Event(_type) {
+        var _eventType = _type;
+        var _id = String(new Date().getTime()) + String(Math.random());
 
-    if(_eventType === null){
-        throw new Error("Specify an event type when you instantiate an event!");
-    }
-
-    return{
-        id: _id,
-        type: _eventType
-    };
-};
-jenius.Model = function(_reference){
-
-    var _id = String(new Date().getTime()) + String(Math.random());
-    var _nameReference = _reference || _id;
-
-    function _reset(){
-    }
-
-    function _dispose(){
-    }
-
-    return {
-        id: _id,
-        nameReference: _nameReference,
-        dispose: _dispose,
-        reset: _reset
-    };
-
-};
-jenius.ModelFacade = (function () {
-
-    var _models = {};
-
-    function _createModel(_modelModule, _args) {
-        if(!_modelModule instanceof Model){
-            throw new Error("ModelFacade accepts to create only objects that extends Model base class!");
+        if (_eventType === null) {
+            throw new Error("Specify an event type when you instantiate an event!");
         }
 
-        var model = new _modelModule(_args);
-        _models[model.nameReference] = model;
-        return model;
+        return {
+            id: _id,
+            type: _eventType
+        };
     }
 
-    function _getModelByName(_modelName) {
-        return _models[_modelName];
-    }
+    jenius.Event = Event;
 
-    function _getModelById(_modelId) {
-        var tmpModel, i;
-        for(i in _models){
-            if(_models[i].id === _modelId)
-                tmpModel = _models[i];
+}(jenius || {}));
+(function(jenius){
+    function Model(_reference) {
+        var _id = String(new Date().getTime()) + String(Math.random());
+        var _nameReference = _reference || _id;
+
+        function _reset() {
         }
-        return tmpModel;
+
+        function _dispose() {
+        }
+
+        return {
+            id: _id,
+            nameReference: _nameReference,
+            dispose: _dispose,
+            reset: _reset
+        };
     }
 
-    return {
-        addModel: _createModel,
-        getModelByName: _getModelByName,
-        getModelById: _getModelById
-    };
-}());
-jenius.PresentationModel = function(_view){
+    jenius.Model = Model;
+}(jenius || {}));
+(function (jenius) {
+    function ModelFacade() {
+        var _models = {};
 
-    var _view = _view;
-    var _emitter = EventEmitter;
-    var _modelFacade = ModelFacade;
-    var _id = String(new Date().getTime()) + String(Math.random());
+        function _createModel(_modelModule, _args) {
+            if (!_modelModule instanceof jenius.Model) {
+                throw new Error("ModelFacade accepts to create only objects that extends Model base class!");
+            }
 
-    function _dispose(){
+            var model = new _modelModule(_args);
+            _models[model.nameReference] = model;
+            return model;
+        }
 
+        function _getModelByName(_modelNameReference) {
+            return _models[_modelNameReference];
+        }
+
+        function _getModelById(_modelId) {
+            var tmpModel, i;
+            for (i in _models) {
+                if (_models[i].id === _modelId) {
+                    tmpModel = _models[i];
+                }
+            }
+            return tmpModel;
+        }
+
+        function _resetAll() {
+            _models = {};
+        }
+
+        return {
+            addModel: _createModel,
+            getModelByName: _getModelByName,
+            getModelById: _getModelById,
+            resetAll: _resetAll
+        };
     }
 
-    return {
-        id: _id,
-        dispose: _dispose
-    };
+    jenius.ModelFacade = new ModelFacade();
 
-};
-jenius.Proxy = function(_url, _method, _successHandler, _errorHandler){
+}(jenius || {}));
+(function(jenius){
+    function PresentationModel(view) {
 
-    var _status, _data;
-    var _id = String(new Date().getTime()) + String(Math.random());
-    var _xhr = new XMLHttpRequest();
-    _xhr.onreadystatechange = function(){
+        if (!view instanceof jenius.View) {
+            throw new Error("PresentationModel accepts to manage only objects that extends View base class!");
+        }
 
-        if (_xhr.readyState === 4) {
+        var _view = view;
+        var _emitter = jenius.EventEmitter;
+        var _modelFacade = jenius.ModelFacade;
+        var _id = String(new Date().getTime()) + String(Math.random());
+
+        function _dispose() {
+        }
+
+        function _getView() {
+            return _view;
+        }
+
+        function _getModelFacade() {
+            return _modelFacade;
+        }
+
+        function _getEmitter() {
+            return _emitter;
+        }
+
+        return {
+            id: _id,
+            view: _getView,
+            emitter: _getEmitter,
+            modelFacade: _getModelFacade,
+            dispose: _dispose
+        };
+    }
+
+    jenius.PresentationModel = PresentationModel;
+
+}(jenius || {}));
+(function(jenius){
+    function Proxy(_url, _method, _successHandler, _errorHandler) {
+        var _status, _data;
+        var _id = String(new Date().getTime()) + String(Math.random());
+        var _xhr = new XMLHttpRequest();
+        _xhr.onreadystatechange = function () {
+            if (_xhr.readyState === 4) {
+                _resultCall();
+            }
+        };
+
+        function _resultCall() {
             _status = _xhr.status;
             if (_status === 200) {
                 _data = _xhr.responseText;
-                if(_successHandler){
-                    _successHandler(_data);
-                }
+                _onSuccess();
             } else {
-                if(_errorHandler){
-                    _errorHandler(_status);
-                } else {
-                    console.log("Error to retrieve data from " + _url + ", error code:" + _status);
-                }
+                _onError();
             }
         }
-    };
 
-    function _sendCall(_dataToSend){
-        _xhr.open(_method, _url, true);
-        _xhr.send(_dataToSend);
+        function _onSuccess() {
+            try {
+                _successHandler(_data);
+            } catch (e) {
+                throw new Error("Success callback not defined inside your proxy instance!");
+            }
+        }
+
+        function _onError() {
+            try {
+                _errorHandler(_status);
+            } catch (e) {
+                console.log("Error to retrieve data from " + _url + ", error code:" + _status);
+            }
+        }
+
+        function _sendCall(_dataToSend) {
+            _xhr.open(_method, _url, true);
+            _xhr.send(_dataToSend);
+        }
+
+        function _addHeader(_name, _value) {
+            _xhr.setRequestHeader(_name, _value);
+        }
+
+        function _getData() {
+            return _data;
+        }
+
+        return {
+            call: _sendCall,
+            addHeader: _addHeader,
+            id: _id,
+            getData: _getData
+        };
     }
 
-    function _addHeader(_name, _value){
-        _xhr.setRequestHeader(_name, _value);
+    jenius.Proxy = Proxy;
+
+}(jenius || {}));
+(function(jenius){
+    function AudioManager() {
+
+        return {};
+
+    }
+    jenius.AudioManager = AudioManager;
+}(jenius || {}));
+(function(jenius){
+    function Composition() {
+
+        function _mixin(_source, _target) {
+            _source.call(_target);
+        }
+
+        return {
+            mixin: _mixin
+        };
     }
 
-    function _getData(){
-        return _data;
-    }
+    jenius.Composition = new Composition();
+}(jenius || {}));
+ (function(jenius){
+    function EventEmitter() {
 
-    return{
-        call: _sendCall,
-        addHeader: _addHeader,
-        id: _id,
-        getData: _getData
-    };
+        var eventsArray = [];
 
-};
-jenius.Composition = (function(){
+        function _on(_event, _callBack) {
+            _addEvent(_event, _callBack, false);
+        }
 
-    function _mixin(_source, _target){
-        _source.call(_target);
-    }
+        function _onOnce(_event, _callBack) {
+            _addEvent(_event, _callBack, true);
+        }
 
-    return{
-        mixin: _mixin
-    };
+        function _addEvent(_event, _callBack, _isOnce) {
+            if (typeof _callBack !== "function") {
+                throw new Error("callback must be a function!");
+            }
 
-}());
-jenius.EventEmitter = (function(){
-
-    var eventsArray = [];
-
-    function _on(_event, _callBack){
-        _addEvent(_event, _callBack, false);
-    }
-
-    function _onOnce(_event, _callBack){
-        _addEvent(_event, _callBack, true);
-    }
-
-    function _addEvent(_event, _callBack, _isOnce){
-        if(typeof _callBack === "function"){
             eventsArray.push({evt: _event, clb: _callBack, isOnce: _isOnce});
-        } else {
-            throw new Error("callback must be a function!");
         }
-    }
 
-    function _off(_event){
-        var tmpArr = eventsArray;
-        eventsArray = tmpArr.filter(function(currentValue){
-            if(currentValue.evt.id !== _event.id){
-                return currentValue;
-            }
-        });
-    }
-
-    function _reset(){
-        eventsArray = [];
-    }
-
-    function _emit(_event, _arguments){
-        var scope = this;
-        eventsArray.map(function(currentValue){
-            if(currentValue.evt.type === _event.type){
-                currentValue.clb(_arguments);
-                if(currentValue.isOnce === true){
-                    scope.off(currentValue.evt);
+        function _off(_event) {
+            var tmpArr = eventsArray;
+            eventsArray = tmpArr.filter(function (currentValue) {
+                if (currentValue.evt.id !== _event.id) {
+                    return currentValue;
                 }
-            }
+            });
+        }
 
-        });
+        function _reset() {
+            eventsArray = [];
+        }
 
+        function _emit(_event, _arguments) {
+            var scope = this;
+            eventsArray.map(function (currentValue) {
+                if (currentValue.evt.type === _event.type) {
+                    currentValue.clb(_arguments);
+                    if (currentValue.isOnce) {
+                        scope.off(currentValue.evt);
+                    }
+                }
+
+            });
+
+        }
+
+        return {
+            on: _on,
+            onOnce: _onOnce,
+            off: _off,
+            reset: _reset,
+            emit: _emit
+        };
     }
 
-    return {
-        on: _on,
-        onOnce: _onOnce,
-        off: _off,
-        reset: _reset,
-        emit: _emit
-    };
+     jenius.EventEmitter = new EventEmitter();
 
-}());
+}(jenius || {}));
 
-jenius.LocalStorage = function(){
+(function(jenius){
+    function LocalStorage() {
 
-    function _isActive(){
-         return (typeof(Storage) !== "undefined");
+        function _isActive() {
+            return (typeof(Storage) !== "undefined");
+        }
+
+        function _setData(_id, _data) {
+            localStorage.setItem(_id, _data);
+        }
+
+        function _getData(_id) {
+            return localStorage.getItem(_id);
+        }
+
+        function _removeData(_id) {
+            localStorage.removeItem(_id);
+        }
+
+        function _removeAllData() {
+            localStorage.clear();
+        }
+
+        return {
+            isActive: _isActive,
+            setData: _setData,
+            getData: _getData,
+            removeData: _removeData,
+            removeAllData: _removeAllData
+        };
     }
 
-    function _setData(_id, _data){
-        localStorage.setItem(_id, _data);
+    jenius.LocalStorage = LocalStorage;
+
+}(jenius || {}));
+(function(jenius){
+    function View() {
+        var _id = String(new Date().getTime()) + String(Math.random());
+
+        function _resize() {
+        }
+
+        function _dispose() {
+        }
+
+        return {
+            id: _id,
+            dispose: _dispose,
+            resize: _resize
+        };
     }
 
-    function _getData(_id){
-        return localStorage.getItem(_id);
-    }
+    jenius.View = View;
 
-    function _removeData(_id){
-        localStorage.removeItem(_id);
-    }
-
-    function _removeAllData(){
-        localStorage.clear();
-    }
-
-    return{
-        isActive: _isActive,
-        setData: _setData,
-        getData: _getData,
-        removeData: _removeData,
-        removeAllData: _removeAllData
-    };
-
-};
-jenius.View = function(){
-
-    var _id = String(new Date().getTime()) + String(Math.random());
-
-    function _resize(){
-    }
-
-    function _dispose(){
-    }
-
-    return {
-        id: _id,
-        dispose: _dispose,
-        resize: _resize
-    };
-
-};}())
+}(jenius || {}));}());
 //# sourceMappingURL=jenius.js.map

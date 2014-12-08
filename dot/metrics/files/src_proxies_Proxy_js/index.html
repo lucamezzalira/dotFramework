@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">70.84</p>
+      <p class="stat">74.92</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">45</p>
+      <p class="stat">61</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">11.41</p>
+      <p class="stat">14.47</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.25</p>
+      <p class="stat">0.30</p>
     </div>
   </div>
 </div>
@@ -92,51 +92,67 @@
     <textarea id="file-source" class="col-md-12">/**
  * Created by mezzalab2013 on 13/11/14.
  */
-jenius.Proxy = function(_url, _method, _successHandler, _errorHandler){
+(function(jenius){
+    function Proxy(_url, _method, _successHandler, _errorHandler) {
+        var _status, _data;
+        var _id = String(new Date().getTime()) + String(Math.random());
+        var _xhr = new XMLHttpRequest();
+        _xhr.onreadystatechange = function () {
+            if (_xhr.readyState === 4) {
+                _resultCall();
+            }
+        };
 
-    var _status, _data;
-    var _id = String(new Date().getTime()) + String(Math.random());
-    var _xhr = new XMLHttpRequest();
-    _xhr.onreadystatechange = function(){
-
-        if (_xhr.readyState === 4) {
+        function _resultCall() {
             _status = _xhr.status;
             if (_status === 200) {
                 _data = _xhr.responseText;
-                if(_successHandler){
-                    _successHandler(_data);
-                }
+                _onSuccess();
             } else {
-                if(_errorHandler){
-                    _errorHandler(_status);
-                } else {
-                    console.log(&quot;Error to retrieve data from &quot; + _url + &quot;, error code:&quot; + _status);
-                }
+                _onError();
             }
         }
-    };
 
-    function _sendCall(_dataToSend){
-        _xhr.open(_method, _url, true);
-        _xhr.send(_dataToSend);
+        function _onSuccess() {
+            try {
+                _successHandler(_data);
+            } catch (e) {
+                throw new Error(&quot;Success callback not defined inside your proxy instance!&quot;);
+            }
+        }
+
+        function _onError() {
+            try {
+                _errorHandler(_status);
+            } catch (e) {
+                console.log(&quot;Error to retrieve data from &quot; + _url + &quot;, error code:&quot; + _status);
+            }
+        }
+
+        function _sendCall(_dataToSend) {
+            _xhr.open(_method, _url, true);
+            _xhr.send(_dataToSend);
+        }
+
+        function _addHeader(_name, _value) {
+            _xhr.setRequestHeader(_name, _value);
+        }
+
+        function _getData() {
+            return _data;
+        }
+
+        return {
+            call: _sendCall,
+            addHeader: _addHeader,
+            id: _id,
+            getData: _getData
+        };
     }
 
-    function _addHeader(_name, _value){
-        _xhr.setRequestHeader(_name, _value);
-    }
+    jenius.Proxy = Proxy;
 
-    function _getData(){
-        return _data;
-    }
-
-    return{
-        call: _sendCall,
-        addHeader: _addHeader,
-        id: _id,
-        getData: _getData
-    };
-
-};</textarea>
+}(jenius || {}));</textarea>
   </div>
 </div>
 

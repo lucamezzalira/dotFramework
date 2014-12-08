@@ -1,11 +1,11 @@
 /**
  * Created by mezzalab2013 on 01/12/14.
  */
-jenius.AudioManager = function(){
+(function(jenius){
+    function AudioManager() {
 
+        return {};
 
-    return{
-
-    };
-
-};
+    }
+    jenius.AudioManager = AudioManager;
+}(jenius || {}));

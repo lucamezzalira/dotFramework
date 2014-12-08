@@ -1,20 +1,42 @@
 /**
  * Created by mezzalab2013 on 14/11/14.
  */
-jenius.PresentationModel = function(_view){
+(function(jenius){
+    function PresentationModel(view) {
 
-    var _view = _view;
-    var _emitter = EventEmitter;
-    var _modelFacade = ModelFacade;
-    var _id = String(new Date().getTime()) + String(Math.random());
+        if (!view instanceof jenius.View) {
+            throw new Error("PresentationModel accepts to manage only objects that extends View base class!");
+        }
 
-    function _dispose(){
+        var _view = view;
+        var _emitter = jenius.EventEmitter;
+        var _modelFacade = jenius.ModelFacade;
+        var _id = String(new Date().getTime()) + String(Math.random());
 
+        function _dispose() {
+        }
+
+        function _getView() {
+            return _view;
+        }
+
+        function _getModelFacade() {
+            return _modelFacade;
+        }
+
+        function _getEmitter() {
+            return _emitter;
+        }
+
+        return {
+            id: _id,
+            view: _getView,
+            emitter: _getEmitter,
+            modelFacade: _getModelFacade,
+            dispose: _dispose
+        };
     }
 
-    return {
-        id: _id,
-        dispose: _dispose
-    };
+    jenius.PresentationModel = PresentationModel;
 
-};
+}(jenius || {}));
