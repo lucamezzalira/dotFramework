@@ -93,6 +93,7 @@
 
         function _dispose() {
         }
+
         return {
             id: _id,
             view: _view,
@@ -165,14 +166,6 @@
 
     jenius.Proxy = Proxy;
 
-}(jenius || {}));
-(function(jenius){
-    function AudioManager() {
-
-        return {};
-
-    }
-    jenius.AudioManager = AudioManager;
 }(jenius || {}));
 (function(jenius){
     function Composition() {

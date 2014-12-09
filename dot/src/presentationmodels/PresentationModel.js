@@ -13,6 +13,7 @@
 
         function _dispose() {
         }
+
         return {
             id: _id,
             view: _view,
