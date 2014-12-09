@@ -14,13 +14,12 @@
 
         function _createRow(_player){
             var container = new PIXI.DisplayObjectContainer();
-
             var bg = new PIXI.Graphics();
             bg.beginFill(_levelsColors[_player.level - 1], 1);
             bg.drawRoundedRect(0, 0, 500, 35, 8);
             bg.endFill();
 
-            var str = _player.name + "    pts. " + _player.points + "   lvl. " + _player.level;
+            var str = _player.username + "    pts. " + _player.points + "   lvl. " + _player.level;
             var datafield = new PIXI.Text(str, {fill: "white"});
 
             datafield.y = (bg.height - datafield.height) / 2
@@ -34,6 +33,7 @@
 
         _scope.init = function(){
             _title = new PIXI.Text("JENIUS LEADERBOARD", {font: "bold 44px Arial", dropShadow: true, fill: "#22CCCC"});
+            _title.x = 10;
             _stage.addChild(_title);
 
             _playerList = new PIXI.DisplayObjectContainer();
@@ -45,15 +45,16 @@
         }
 
         _scope.createList = function(_players){
-            var i = 0;
-            var totalPlayers = _players.length;
-            var tmpRow;
-
-            for(i; i < totalPlayers; i++){
+            var i, tmpRow;
+            var counter = 0;
+            for(i in _players){
                 tmpRow = _createRow(_players[i]);
-                tmpRow.y = (tmpRow.height + 5) * i;
+                tmpRow.y = (tmpRow.height + 5) * counter;
                 _playerList.addChild(tmpRow);
+                counter++;
             }
+
+            console.log("...", _playerList.height);
         }
 
         _scope.resize = function(){
