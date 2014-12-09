@@ -1,4 +1,4 @@
-/*  - jenius v1.0.0 - 2014-12-03 - website: www.jenius.io - email: mezzalab@gmail.com */var jenius = jenius || {};(function(){(function(jenius){
+/*  - jenius v1.0.0 - 2014-12-09 - website: www.jenius.io - email: mezzalab@gmail.com */var jenius = jenius || {};(function(){(function(jenius){
 
     function Event(_type) {
         var _eventType = _type;
@@ -89,30 +89,15 @@
         }
 
         var _view = view;
-        var _emitter = jenius.EventEmitter;
-        var _modelFacade = jenius.ModelFacade;
         var _id = String(new Date().getTime()) + String(Math.random());
 
         function _dispose() {
         }
-
-        function _getView() {
-            return _view;
-        }
-
-        function _getModelFacade() {
-            return _modelFacade;
-        }
-
-        function _getEmitter() {
-            return _emitter;
-        }
-
         return {
             id: _id,
-            view: _getView,
-            emitter: _getEmitter,
-            modelFacade: _getModelFacade,
+            view: _view,
+            emitter: jenius.EventEmitter,
+            modelFacade: jenius.ModelFacade,
             dispose: _dispose
         };
     }
@@ -193,7 +178,7 @@
     function Composition() {
 
         function _mixin(_source, _target) {
-            _source.call(_target);
+           return _source.call(_target);
         }
 
         return {
@@ -300,7 +285,7 @@
 
 }(jenius || {}));
 (function(jenius){
-    function View() {
+    function View(_stage) {
         var _id = String(new Date().getTime()) + String(Math.random());
 
         function _resize() {

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>PIXI.JS leadboard</title>
+    <script type="text/javascript" src="libs/pixi.dev.js"></script>
+    <script type="text/javascript" src="libs/jenius.js"></script>
+
+    <!-- to remove -->
+    <script>var LEADBOARD = LEADBOARD || {};</script>
+    <!-- --------- -->
+    <script type="text/javascript" src="src/views/LeadboardView.js"></script>
+    <script type="text/javascript" src="src/presentationmodels/LeadboardPM.js"></script>
+    <script type="text/javascript" src="src/vos/PlayerVO.js"></script>
+    <script type="text/javascript" src="src/models/LeadboardModel.js"></script>
+    <script type="text/javascript" src="src/Main.js"></script>
+</head>
+<body style="margin: 0px" onload="LEADBOARD.Main.init()">
+    <canvas id="leadboardCanvas" style="width: 100%; height: 100%;"></canvas>
+</body>
+</html>

@@ -9,30 +9,15 @@
         }
 
         var _view = view;
-        var _emitter = jenius.EventEmitter;
-        var _modelFacade = jenius.ModelFacade;
         var _id = String(new Date().getTime()) + String(Math.random());
 
         function _dispose() {
         }
-
-        function _getView() {
-            return _view;
-        }
-
-        function _getModelFacade() {
-            return _modelFacade;
-        }
-
-        function _getEmitter() {
-            return _emitter;
-        }
-
         return {
             id: _id,
-            view: _getView,
-            emitter: _getEmitter,
-            modelFacade: _getModelFacade,
+            view: _view,
+            emitter: jenius.EventEmitter,
+            modelFacade: jenius.ModelFacade,
             dispose: _dispose
         };
     }

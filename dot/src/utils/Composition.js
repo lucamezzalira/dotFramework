@@ -5,7 +5,7 @@
     function Composition() {
 
         function _mixin(_source, _target) {
-            _source.call(_target);
+           return _source.call(_target);
         }
 
         return {
