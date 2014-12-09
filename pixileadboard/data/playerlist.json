@@ -1,0 +1,52 @@
+{
+    "player1": {
+        "username": "cepemicipa",
+        "level": 3,
+        "points": 2355
+    },
+    "player2": {
+        "username": "goodboy",
+        "level": 1,
+        "points": 498
+    },
+    "player3": {
+        "username": "digitally",
+        "level": 5,
+        "points": 7845
+    },
+    "player4": {
+        "username": "harora",
+        "level": 4,
+        "points": 200
+    },
+    "player5": {
+        "username": "valhalla",
+        "level": 1,
+        "points": 4157
+    },
+    "player6": {
+        "username": "kahn",
+        "level": 3,
+        "points": 2354
+    },
+    "player7": {
+        "username": "zeus",
+        "level": 5,
+        "points": 658
+    },
+    "player8": {
+        "username": "thief_88",
+        "level": 3,
+        "points": 457
+    },
+    "player9": {
+        "username": "m0nst3r",
+        "level": 2,
+        "points": 985
+    },
+    "player10": {
+        "username": "_robin__hood_",
+        "level": 2,
+        "points": 2514
+    }
+}

@@ -10,8 +10,16 @@
             _view = view;
             _model = _scope.modelFacade().addModel(LEADBOARD.LeadboardModel);
 
-            _view.init();
-            _view.createList(_model.getPlayersList());
+            _scope.emitter().on("PlayersListReady", _popolateView);
+
+           _view.init();
+
+           var p = new LEADBOARD.LeaderboardProxy();
+           p.loadData();
+        }
+
+        function _popolateView(_data){
+            _view.createList(_data);
         }
 
         init();
